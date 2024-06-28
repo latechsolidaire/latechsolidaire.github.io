@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.pink.min.css"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.5.1/mustache.min.js"></script>
 
     <link rel="stylesheet" href="./style.css" />
 
@@ -27,12 +28,27 @@
     <meta name="twitter:description" content="Les 30 juin et 7 juillet, nous appelons à voter Nouveau Front Populaire.">
     <meta name="twitter:image" content="https://latechsolidaire.github.io./banner.png">
 
+    <script>
+      function renderSignataires() {
+        fetch('./allSignatories.json')
+          .then((response) => response.json())
+          .then((allSignatories) => {
+            const sorted = allSignatories.sort();
+
+            const template = document.getElementById("template").innerHTML;
+            const rendered = Mustache.render(template, { allSignatories: sorted });
+            document.getElementById("signatories").innerHTML = rendered;
+          });
+      }
+    </script>
+
   </head>
-  <body class="container">
+  <body class="container"  onload="renderSignataires()">
     <nav>
       <ul>
         <li><a href="#video">La vidéo</a></li>
         <li><a href="#appel">L’appel</a></li>
+        <li><a href="#signataires">Les signataires</a></li>
       </ul>
       <ul>
         <li><a href="#signez"><button class="primary">Signez !</button></a></li>
@@ -171,13 +187,25 @@
           </p>
       </section>
 
-      <section>
+      <section id="signataires">
         <h2>Les signataires</h2>
 
-        <ul>
-          <li></li>
-        </ul>
+        <div id="signatories"></div>
+
+        <script id="template" type="x-tmpl-mustache">
+          <ul>
+            {{#allSignatories}}
+            <li>{{.}}</li>
+            {{/allSignatories}}
+          </ul>
+        </script>
+
+       
       </section>
     </main>
+
+    <footer>
+      <a href="https://github.com/latechsolidaire/latechsolidaire.github.io">Github</a>
+    </footer>
   </body>
 </html>
